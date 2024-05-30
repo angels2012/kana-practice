@@ -1,0 +1,73 @@
+#reloadButton {
+    font-size: 16px;
+    border-radius: 3px;
+    background-color: var(--purple-accent);
+    border: 1px solid grey;
+    box-shadow: 2px 2px teal;
+    cursor: pointer;
+    color: white;
+    font-weight: bolder;
+    text-transform: uppercase;
+
+    margin-left: 90%;
+}
+
+#reloadButton:hover {
+    background-color: white;
+    color: var(--purple-accent);
+}
+
+input[name*="milisecondsForHardmode"]::-webkit-outer-spin-button,
+input[name*="milisecondsForHardmode"]::-webkit-inner-spin-button {
+    /* -webkit-appearance: none; */
+    margin: 0;
+
+}
+
+input[name*="milisecondsForHardmode"] {
+    margin-left: 2%;
+    width: min-content;
+    text-align: center;
+    display: inline;
+    border: none;
+    border-bottom: 2px solid var(--purple-accent);
+}
+
+.hardModeSettingsContainer {
+    display: inline;
+    width: fit-content;
+}
+
+input[type='checkbox'] {
+    display: none;
+}
+
+.checkbox {
+    width: 20px;
+    height: 20px;
+    background-color: var(--transparent);
+    border: 1px solid var(--black-accent);
+    box-shadow: 2px 2px var(--black-accent);
+    cursor: pointer;
+    display: inline-block;
+    vertical-align: sub;
+    margin: 2px;
+}
+
+.checkbox:hover {
+    background-color: rgba(86, 0, 224, 0.254);
+}
+
+li>label,
+label[for="hardModeCheckbox"] {
+    cursor: pointer;
+}
+
+input[type="checkbox"]:checked+label div.checkbox {
+    background-color: var(--purple-accent);
+}
+
+
+.settings label:hover {
+    filter: opacity(0.7);
+}

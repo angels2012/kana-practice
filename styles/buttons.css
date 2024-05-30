@@ -1,0 +1,22 @@
+.mainArea button {
+    margin-right: 5px;
+    font-size: 20px;
+    border-radius: 1px;
+    background-color: var(--purple-accent);
+    color: rgb(225, 255, 0);
+    border: 1px solid grey;
+    box-shadow: 2px 2px var(--black-accent);
+    cursor: pointer;
+    font-weight: bolder;
+    text-transform: uppercase;
+}
+
+.mainArea button:hover {
+    background-color: yellow;
+    color: var(--purple-accent);
+    /* color: white; */
+}
+
+.mainArea button:active {
+    box-shadow: none;
+}

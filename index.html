@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles/general.css">
+    <link rel="stylesheet" href="./styles/buttons.css">
+    <link rel="stylesheet" href="./styles/settings.css">
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
+    <script src="client.js" type="module"></script>
+    <title>KANA PRACTICE</title>
+</head>
+
+<body>
+    <header>
+        <h1>
+            Kana Reading Practice
+        </h1>
+        <div>
+            <h2 id="moreInfoButton">
+                (?)
+            </h2>
+
+            <div class="moreInfoText">
+                <h2>Original description:</h2>
+                <p>
+                    After you learn the basics of hiragana and katakana, you need practice! Practicing individual
+                    characters
+                    is useful,
+                    but being able to read kana fluently means reading whole words, almost without thinking about it.
+                    This app collects a list of hiragana and katakana words. When a random word appears, input the
+                    romaji
+                    equivalent in the text box and press enter.
+                    If you're correctAnswerContainer, it will go on to the next random word, otherwise, it will let you
+                    try again.
+                    As a bonus, it also displays the meanings of the words, so you can also pickup the words' meanings
+                    as
+                    you go!
+                </p>
+                <p>
+                    (I know some of these have kanji that are used instead of kana, but the focus of this app is to make
+                    reading kana as easy as reading the english alphabet,
+                    not becoming a fluent japanese reader)
+                </p>
+                <p>
+                    For practicing individual kana, I'd recommend <a href="http://realkana.com/">real kana</a>.
+                </p>
+                <h2>New features in this fork</h2>
+                <p>
+                    Settings to improve the memorization process: hiding translation, hiding what you're typing, and a
+                    hard mode, which makes the answer disappear after a certain amount of time.
+                    <br>Your answer will now also be accepted if you input raw kana characters.
+                </p>
+            </div>
+
+        </div>
+    </header>
+
+    <main>
+
+        <br>
+        <span><button id="reloadButton">Reload</button></span>
+
+        <div class="settings">
+            <ul>
+                <li>
+                    <input id="hideTranslationCheckbox" type="checkbox">
+                    <label for="hideTranslationCheckbox">
+                        <div class="checkbox"></div>
+                        Hide translation
+                    </label>
+                </li>
+
+                <li>
+                    <input id="hideUserInputCheckbox" type="checkbox">
+                    <label for="hideUserInputCheckbox">
+                        <div class="checkbox"></div>
+                        Hide user input
+                    </label>
+                </li>
+
+                <li>
+                    <div class="hardModeSettingsContainer">
+
+                        <input id="hardModeCheckbox" type="checkbox">
+                        <label for="hardModeCheckbox">
+                            <div class="checkbox"></div>
+                            Hard mode
+                        </label>
+
+                        <input type="number" id="milisecondsForHardmode" name="milisecondsForHardmode" min="100"
+                            max="5000" value="500">
+                        <label for="milisecondsForHardmode">ms before hint disappears</label>
+                    </div>
+                </li>
+            </ul>
+
+        </div>
+
+        <hr>
+        <br>
+
+        <div class="mainArea">
+            <span id="kana"></span>
+
+            <span id="translationContainer">
+                <span id="translationElement">asd</span>
+            </span>
+
+            <br>
+            <br>
+
+            <input type="text" id="userInput" autocomplete="off" autocapitalize="off" spellcheck="false" autofocus />
+
+            <br>
+
+            <div class="answerContainer" id="wrongAnswerContainer" style="display:none;">
+                <p class="answerSymbol">❌</p>
+                <p class="answerVerdict"> Wrong! </p>
+            </div>
+
+            <div class="answerContainer" id="correctAnswerContainer" style="display:none;">
+                <p class="answerSymbol">✅</p>
+                <span class="answerVerdict"> Correct! </span>
+            </div>
+
+            <div>
+                Total Words Seen: <span id="wordsDisplayedCount"></span>&nbsp;&nbsp;
+                Correct answers: <span id="correctAnswersCount"></span>&nbsp;&nbsp;
+                Total words in bank: <span id="wordsInBankCount"></span>&nbsp;&nbsp;
+            </div>
+            <button id="showAnswerButton">Show Answer</button>
+            <button id="getNewKanaButton">Get New Word</button>
+
+        </div>
+    </main>
+
+    <footer>
+        <br><br>
+        Fork by Angel S
+        <br>
+        Original: <a href="https://kana-reading-practice.glitch.me/">https://kana-reading-practice.glitch.me/</a>
+    </footer>
+
+</body>
+
+</html>
