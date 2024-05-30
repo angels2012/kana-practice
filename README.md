@@ -9,7 +9,9 @@ git clone https://github.com/angels2012/kana-practice
 cd kana-practice
 ```
 2. Run dev server with vite.js
-`npx vite --open`
+```
+npx vite --open
+```
 
 3. Go to the link shown by vite
 ```
