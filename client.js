@@ -1,4 +1,4 @@
-import { getRandomInt, normalize, shuffleArray } from './lib.js';
+import { normalize, shuffleArray } from './lib.js';
 import { hiraganaDictionary, katakanaDictionary } from './data.js';
 
 function handleMoreInfoButton() {
@@ -19,7 +19,7 @@ function handleWin() {
     alert('youve won');
 }
 
-function handleGetNewKana() {
+function handleNewKana() {
     if (kanaObjects.length == 0) { handleWin(); return; }
 
     domKanaShowcase.classList.remove('transparent');
@@ -65,7 +65,7 @@ function handleCorrectAnswer() {
     domWrongAnswerContainer.style.display = 'none';
     setTimeout(() => {
         removeFeedback();
-        handleGetNewKana();
+        handleNewKana();
     }, howLongWillFeedbackShowFor);
 }
 
@@ -197,7 +197,7 @@ domUserInputCheckbox.addEventListener("click", handleUserInputDisplayToggle);
 domHardmodeCheckbox.addEventListener("click", handleHardModeToggle);
 
 document.querySelector("#showAnswerButton").addEventListener("click", handleShowAnswer);
-document.querySelector("#getNewKanaButton").addEventListener("click", handleGetNewKana);
+document.querySelector("#getNewKanaButton").addEventListener("click", handleNewKana);
 document.querySelector("#moreInfoButton").addEventListener("click", handleMoreInfoButton);
 document.querySelector("#reloadButton").addEventListener("click", () => location.reload());
 
@@ -208,7 +208,7 @@ document.addEventListener('DOMContentLoaded', function () {
     domCorrectAnswerCount.innerText = 0;
     domWordsSeenCount.innerText = 0;
 
-    handleGetNewKana();
+    handleNewKana();
     document.addEventListener('keydown', onKeyDownHandler);
 });
 
