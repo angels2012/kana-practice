@@ -1,82 +1,88 @@
-import { getRandomInt, isInArray, normalize } from './lib.js'
+import { getRandomInt, normalize, shuffleArray } from './lib.js';
 import { hiraganaDictionary, katakanaDictionary } from './data.js';
 
 function handleMoreInfoButton() {
-    if (!infoState) {
+    shouldMoreInfoBeDisplayed = !shouldMoreInfoBeDisplayed;
+    if (!shouldMoreInfoBeDisplayed) {
         domMoreInformation.style.display = "none";
     }
     else {
         domMoreInformation.style.display = 'block';
     }
-    infoState = !infoState;
 }
 
 function handleShowAnswer() {
     domUserInput.value = hiraganaDictionary[domKanaShowcase.innerText].romaji.toLowerCase();
 }
 
+function handleWin() {
+    alert('youve won');
+}
+
 function handleGetNewKana() {
-    lastIndicies.splice(lastIndiciesInsertVal, 1, keyListIndex);
-    lastIndiciesInsertVal = (lastIndiciesInsertVal + 1) % 5;
-    restoreHintStyle();
-    let newIndex = getRandomInt(keyList.length);
-    //make sure it's not the same one
-    while (isInArray(newIndex, lastIndicies)) {
-        newIndex = getRandomInt(keyList.length);
-    }
+    if (kanaObjects.length == 0) { handleWin(); return; }
 
-    keyListIndex = newIndex;
-    totalShowed++;
-    domWordsDisplayedCount.innerText = totalShowed;
-
-    //set values on the page
-    domKanaShowcase.innerText = keyList[keyListIndex];
-    domTranslationShowcase.innerText = hiraganaDictionary[keyList[keyListIndex]].meaning;
+    domKanaShowcase.classList.remove('transparent');
+    currentKanaObject = kanaObjects.shift();
+    totalShown++;
+    domWordsSeenCount.innerText = totalShown;
+    domKanaShowcase.innerText = currentKanaObject.kana;
+    domTranslationShowcase.innerText = currentKanaObject.meaning;
     hardmodeTimeInMiliseconds = document.querySelector("#milisecondsForHardmode").value;
-    if (settings.hardMode) setTimeout(modifyHintStyle, hardmodeTimeInMiliseconds);
+
+    if (settings.hardMode) {
+        setTimeout(onHardmodeRender, hardmodeTimeInMiliseconds);
+    }
 
     domUserInput.value = '';
 }
 
-function hideFeedback(extraFunc) {
-    domCorrectAnswerContainer.style.display = 'none';
-    domWrongAnswerContainer.style.display = 'none';
-    if (typeof extraFunc != 'undefined') {
-        extraFunc();
-    }
-}
-
-function modifyHintStyle() {
-    domKanaShowcase.style.color = "#00000000";
-}
-
-function restoreHintStyle() {
-    domKanaShowcase.style = kana_and_definition_style["domKanaShowcase"];
-    // domTranslationShowcase.style = kana_and_definition_style["domTranslationShowcase"];
+function onHardmodeRender() {
+    domKanaShowcase.classList.add('transparent');
 }
 
 function onKeyDownHandler(e) {
-    if (e.key == "Enter") {
-        const rawUserInput = domUserInput.value;
-        const lowercasedUserInput = domUserInput.value.toLowerCase();
-        const answerInRomaji = hiraganaDictionary[domKanaShowcase.innerText].romaji.toLowerCase();
-        const answerInKana = domKanaShowcase.innerText;
-        if (answerInRomaji == lowercasedUserInput || answerInKana == rawUserInput) {
-            numberCorrect++;
-            domCorrectAnswerCount.innerText = numberCorrect;
-            domCorrectAnswerContainer.style.display = 'flex';
-            domWrongAnswerContainer.style.display = 'none';
-            window.setTimeout(hideFeedback, feedbackDisplayTime, handleGetNewKana);
-        }
-        else {
-            domCorrectAnswerContainer.style.display = 'none';
-            domWrongAnswerContainer.style.display = 'flex';
-            window.setTimeout(hideFeedback, feedbackDisplayTime);
-        }
+    if (e.key != "Enter") return;
+
+    const rawUserInput = domUserInput.value;
+    const lowercasedUserInput = rawUserInput.toLowerCase();
+    const answerInRomaji = currentKanaObject.romaji.toLowerCase();
+    const answerInKana = currentKanaObject.kana;
+
+    if (answerInRomaji == lowercasedUserInput || answerInKana == rawUserInput) {
+        handleCorrectAnswer();
     }
+    else {
+        handleWrongAnswer();
+    }
+
 }
 
-function renderSettingsState() {
+function handleCorrectAnswer() {
+    numberCorrect++;
+    domCorrectAnswerCount.innerText = numberCorrect;
+    domCorrectAnswerContainer.style.display = 'flex';
+    domWrongAnswerContainer.style.display = 'none';
+    setTimeout(() => {
+        removeFeedback();
+        handleGetNewKana();
+    }, howLongWillFeedbackShowFor);
+}
+
+function handleWrongAnswer() {
+    domCorrectAnswerContainer.style.display = 'none';
+    domWrongAnswerContainer.style.display = 'flex';
+    setTimeout(() => {
+        removeFeedback();
+    }, howLongWillFeedbackShowFor);
+}
+
+function removeFeedback() {
+    domCorrectAnswerContainer.style.display = 'none';
+    domWrongAnswerContainer.style.display = 'none';
+}
+
+function renderSettingsPanel() {
     domHardmodeCheckbox.checked = settings.hardMode;
     domUserInputCheckbox.checked = settings.hideUserInput;
     domTranslationCheckbox.checked = settings.hideMeaning;
@@ -87,7 +93,7 @@ function saveSettingsToLocalStorage() {
     console.log(settings);
     const stringifiedSettings = JSON.stringify(settings);
     localStorage.setItem("appSettings", stringifiedSettings);
-    renderSettingsState();
+    renderSettingsPanel();
 }
 
 function loadSettingsFromLocalStorage() {
@@ -101,9 +107,11 @@ function loadSettingsFromLocalStorage() {
     } else {
         const settingsObject = JSON.parse(stringifiedSettings);
         settings = { ...settingsObject };
-        console.log(settings);
     }
+    renderSettingsToScreen();
+}
 
+function renderSettingsToScreen() {
     renderHideMeaningSetting();
     renderHideUserInputSetting();
     renderHardModeToggleSetting();
@@ -157,27 +165,22 @@ let domWrongAnswerContainer = document.getElementById('wrongAnswerContainer');
 
 let domWordsInBankCount = document.getElementById('wordsInBankCount');
 let domCorrectAnswerCount = document.getElementById('correctAnswersCount');
-let domWordsDisplayedCount = document.getElementById('wordsDisplayedCount');
+let domWordsSeenCount = document.getElementById('wordsSeenCount');
 
 let domTranslationContainer = document.getElementById('translationContainer');
 let hardmodeTimeInMiliseconds = document.querySelector("#milisecondsForHardmode").value;
 
 const domMoreInformation = document.querySelector(".moreInfoText");
 
-let infoState = true;
+let shouldMoreInfoBeDisplayed = false;
 
-let keyList = [];
-let keyListIndex = 0;
-let lastIndicies = [];
-let lastIndiciesInsertVal = 0;
-let feedbackDisplayTime = 800;
+let kanaObjects = [];
+let currentKanaObject = {};
+
 let numberCorrect = 0;
-let totalShowed = 0;
+let totalShown = 0;
 
-let kana_and_definition_style = {
-    "domKanaShowcase": domKanaShowcase.style,
-    "domTranslationShowcase": domTranslationShowcase.style
-};
+let howLongWillFeedbackShowFor = 800;
 
 let settings = {
     hideMeaning: false,
@@ -199,21 +202,14 @@ document.querySelector("#moreInfoButton").addEventListener("click", handleMoreIn
 document.querySelector("#reloadButton").addEventListener("click", () => location.reload());
 
 document.addEventListener('DOMContentLoaded', function () {
-    for (let key in hiraganaDictionary) {
-        keyList.push(key);
-    }
-    domWordsInBankCount.innerText = keyList.length;
+    kanaObjects = shuffleArray([...hiraganaDictionary]);
+
+    domWordsInBankCount.innerText = kanaObjects.length;
     domCorrectAnswerCount.innerText = 0;
-    domWordsDisplayedCount.innerText = 0;
+    domWordsSeenCount.innerText = 0;
 
     handleGetNewKana();
-
-    if (document.attachEvent) {
-        document.attachEvent('onkeydown', onKeyDownHandler);
-    }
-    else {
-        document.addEventListener('keydown', onKeyDownHandler);
-    }
+    document.addEventListener('keydown', onKeyDownHandler);
 });
 
 loadSettingsFromLocalStorage();
